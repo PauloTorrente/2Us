@@ -1,0 +1,29 @@
+# ============================================================
+# render.yaml — Render deployment config
+# Commit this file. Render reads it automatically on deploy.
+# Docs: https://render.com/docs/blueprint-spec
+# ============================================================
+
+services:
+  - type: web
+    name: coupleapp-backend
+    runtime: docker
+    region: oregon
+    plan: free
+    branch: main
+    healthCheckPath: /actuator/health
+
+    envVars:
+      # sync: false = must be set manually in Render dashboard (it's a secret)
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_USERNAME
+        sync: false
+      - key: DATABASE_PASSWORD
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRATION_MS
+        value: 86400000
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
