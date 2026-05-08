@@ -1,3 +1,12 @@
+// ================================================================================
+// REDIS CONFIGURATION — DESABILITADO PARA DESENVOLVIMENTO
+// ================================================================================
+// Use apenas em produção. Para desenvolvimento local, use Caffeine (em CacheConfig.java)
+// Quando estiver pronto para produção, remova os comentários e re-adicione a 
+// dependência spring-boot-starter-data-redis no pom.xml
+// ================================================================================
+
+/*
 package com.coupleapp.config;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -56,3 +65,4 @@ public class RedisConfig {
         return template;
     }
 }
+*/

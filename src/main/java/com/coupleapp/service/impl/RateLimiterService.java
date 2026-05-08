@@ -1,18 +1,25 @@
 package com.coupleapp.service.impl;
 
+// ================================================================================
+// RATE LIMITER SERVICE — DESABILITADO PARA DESENVOLVIMENTO
+// ================================================================================
+// Rate limiting baseado em Redis desabilitado em DEV
+// Requer Redis configurado. Para usar em produção:
+// 1. Descomente a classe abaixo
+// 2. Re-adicione spring-boot-starter-data-redis no pom.xml
+// 3. Configure Redis em application-prod.yml
+// ================================================================================
+
+/*
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
-// import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.Duration;
 
-/**
- * Rate Limiter Service using Redis
- * TEMPORARIAMENTE DESABILITADO - PRECISA REDIS CONFIGURADO
- */
 @Slf4j
-//@Service  // COMENTADO - Descomente quando Redis estiver configurado
+@Service
 public class RateLimiterService {
 
     private final RedisTemplate<String, Object> redisTemplate;
@@ -24,9 +31,7 @@ public class RateLimiterService {
         this.redisTemplate = redisTemplate;
     }
 
-    /**
-     * Check if rate limit has been exceeded for a given key
-     */
+    // Check if rate limit has been exceeded for a given key
     public boolean isRateLimitExceeded(String key, int maxAttempts, int windowMinutes) {
         try {
             String rateLimitKey = "rate_limit:" + key;
@@ -54,9 +59,7 @@ public class RateLimiterService {
         }
     }
 
-    /**
-     * Reset rate limit for a given key
-     */
+    // Reset rate limit for a given key
     public void resetRateLimit(String key) {
         try {
             String rateLimitKey = "rate_limit:" + key;
@@ -67,9 +70,7 @@ public class RateLimiterService {
         }
     }
 
-    /**
-     * Get remaining attempts for a given key
-     */
+    // Get remaining attempts for a given key
     public int getRemainingAttempts(String key, int maxAttempts) {
         try {
             String rateLimitKey = "rate_limit:" + key;
@@ -88,9 +89,7 @@ public class RateLimiterService {
         }
     }
 
-    /**
-     * Cache a value with TTL
-     */
+    // Cache a value with TTL
     public void cacheValue(String key, Object value, int ttlMinutes) {
         try {
             redisTemplate.opsForValue().set(key, value, Duration.ofMinutes(ttlMinutes));
@@ -100,9 +99,7 @@ public class RateLimiterService {
         }
     }
 
-    /**
-     * Get cached value
-     */
+    // Get cached value
     public Object getCachedValue(String key) {
         try {
             return redisTemplate.opsForValue().get(key);
@@ -112,9 +109,7 @@ public class RateLimiterService {
         }
     }
 
-    /**
-     * Delete cached value
-     */
+    // Delete cached value
     public void deleteCachedValue(String key) {
         try {
             redisTemplate.delete(key);
@@ -124,3 +119,4 @@ public class RateLimiterService {
         }
     }
 }
+*/

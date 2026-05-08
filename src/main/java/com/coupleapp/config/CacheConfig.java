@@ -7,19 +7,22 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
-import org.springframework.data.redis.cache.RedisCacheConfiguration;
-import org.springframework.data.redis.cache.RedisCacheManager;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.RedisSerializationContext;
+
+// Imports comentados — Redis desabilitado em DEV
+// import org.springframework.context.annotation.Primary;
+// import org.springframework.data.redis.cache.RedisCacheConfiguration;
+// import org.springframework.data.redis.cache.RedisCacheManager;
+// import org.springframework.data.redis.connection.RedisConnectionFactory;
+// import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+// import org.springframework.data.redis.serializer.RedisSerializationContext;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
-// Configures caching with Redis for production (distributed) or Caffeine for local dev (in-memory).
-// Redis allows multiple backend instances to share the same cache, improving hit rate.
+// Configures caching with Caffeine for local development (in-memory).
+// Redis configuration is commented out and available in RedisConfig.java for production use.
+// To enable Redis in production, uncomment RedisConfig.java and re-add the spring-boot-starter-data-redis dependency in pom.xml
 @Configuration
 @EnableCaching
 public class CacheConfig {
@@ -27,7 +30,9 @@ public class CacheConfig {
     @Value("${app.cache.ttl-hours:1}")
     private int cacheTtlHours;
 
-    // Redis cache manager — used in production for distributed caching
+    // Redis cache manager — DESABILITADO (comentado em RedisConfig.java)
+    // Descomente apenas em produção quando Redis estiver disponível
+    /*
     @Bean
     @Primary
     @Profile("prod")
@@ -44,6 +49,7 @@ public class CacheConfig {
             .cacheDefaults(config)
             .build();
     }
+    */
 
     // Caffeine cache manager — used in local development (no Redis required)
     @Bean
