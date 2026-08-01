@@ -12,17 +12,17 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class CoupleAppApplication {
 
     public static void main(String[] args) {
-        // Carregar .env primeiro (se existir)
+        // Load .env before the Spring context boots, so datasource/JWT properties resolve correctly.
         try {
             Dotenv dotenv = Dotenv.configure()
                     .ignoreIfMissing()
                     .load();
-            
-            dotenv.entries().forEach(entry -> 
+
+            dotenv.entries().forEach(entry ->
                 System.setProperty(entry.getKey(), entry.getValue())
             );
         } catch (Exception e) {
-            System.err.println("⚠️  Arquivo .env não encontrado, usando variáveis de ambiente do sistema");
+            System.err.println("No .env file found, falling back to system environment variables");
         }
 
         SpringApplication.run(CoupleAppApplication.class, args);

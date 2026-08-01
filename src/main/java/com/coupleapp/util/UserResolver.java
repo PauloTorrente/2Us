@@ -8,9 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-// Helper used by all controllers to convert the authenticated UserDetails (which only has email)
-// into a full User entity with DB ID, couple reference, and preferences.
-// Centralizes this logic so it's not duplicated across every controller.
+// Converts the authenticated UserDetails (email only) into a full User entity.
+// Centralizes this so controllers don't duplicate the lookup.
 @Component
 @RequiredArgsConstructor
 public class UserResolver {

@@ -1,14 +1,7 @@
 package com.coupleapp.service.impl;
 
-// ================================================================================
-// RATE LIMITER SERVICE — DESABILITADO PARA DESENVOLVIMENTO
-// ================================================================================
-// Rate limiting baseado em Redis desabilitado em DEV
-// Requer Redis configurado. Para usar em produção:
-// 1. Descomente a classe abaixo
-// 2. Re-adicione spring-boot-starter-data-redis no pom.xml
-// 3. Configure Redis em application-prod.yml
-// ================================================================================
+// Disabled for local dev — this rate limiter needs Redis, which isn't provisioned yet.
+// To enable in prod: uncomment below, restore the Redis dependency, and configure it in application-prod.yml.
 
 /*
 import org.springframework.beans.factory.annotation.Value;

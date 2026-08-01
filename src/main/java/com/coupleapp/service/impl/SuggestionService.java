@@ -355,10 +355,9 @@ public class SuggestionService {
             // Both platforms have data — use weighted average
             combined = (googleScore * 0.6) + (taScore * 0.4);
         } else {
-            // Only Google has data
-            // If preferLocal is true, boost score by 10% to prioritize local businesses
-            // that might not be on TripAdvisor yet
-            combined = preferLocal != null && preferLocal 
+            // Only Google has data — boost by 10% when preferLocal, since small local spots
+            // are less likely to be listed on TripAdvisor yet.
+            combined = preferLocal != null && preferLocal
                 ? Math.min(googleScore * 1.1, 5.0)  // Cap at 5.0
                 : googleScore;
         }

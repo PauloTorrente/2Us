@@ -1,10 +1,5 @@
-// ================================================================================
-// REDIS CONFIGURATION — DESABILITADO PARA DESENVOLVIMENTO
-// ================================================================================
-// Use apenas em produção. Para desenvolvimento local, use Caffeine (em CacheConfig.java)
-// Quando estiver pronto para produção, remova os comentários e re-adicione a 
-// dependência spring-boot-starter-data-redis no pom.xml
-// ================================================================================
+// Disabled for local dev — CacheConfig.java uses Caffeine instead.
+// To enable in prod: uncomment this class and add spring-boot-starter-data-redis back to pom.xml.
 
 /*
 package com.coupleapp.config;

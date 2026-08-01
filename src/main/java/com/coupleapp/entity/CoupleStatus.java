@@ -1,55 +1,31 @@
 package com.coupleapp.entity;
 
-/**
- * Status of a couple relationship in the system.
- * Controls access and features based on relationship state.
- */
+// Lifecycle state of a couple. Drives which features are accessible at each stage.
 public enum CoupleStatus {
-    
-    /**
-     * One partner created the couple, waiting for second partner to accept.
-     */
+
+    // Creator set up the couple, waiting for the invite code to be used.
     PENDING_INVITE,
-    
-    /**
-     * Invite was sent, waiting for acceptance.
-     */
+
+    // Default state before a couple is explicitly initialized.
     PENDING,
-    
-    /**
-     * Both partners accepted, couple is active and can use all features.
-     */
+
+    // Both partners are in — full feature access.
     ACTIVE,
-    
-    /**
-     * Couple is temporarily paused (e.g., break, separation).
-     * Data is preserved but access is restricted.
-     */
+
+    // Temporarily paused (e.g. break). Data is kept but access is restricted.
     PAUSED,
-    
-    /**
-     * Couple ended the relationship.
-     * Data is archived, no further changes allowed.
-     */
+
+    // Relationship ended. Data is archived and read-only.
     ENDED;
-    
-    /**
-     * Check if this status allows full couple features.
-     */
+
     public boolean isActive() {
         return this == ACTIVE;
     }
-    
-    /**
-     * Check if this status allows data modifications.
-     */
+
     public boolean canModify() {
         return this == ACTIVE || this == PENDING || this == PENDING_INVITE;
     }
-    
-    /**
-     * Check if waiting for partner acceptance.
-     */
+
     public boolean isPending() {
         return this == PENDING || this == PENDING_INVITE;
     }

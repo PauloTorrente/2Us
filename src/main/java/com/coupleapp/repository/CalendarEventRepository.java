@@ -27,4 +27,8 @@ public interface CalendarEventRepository extends JpaRepository<CalendarEvent, Lo
     // Events coming up within a given number of days — used to trigger reminder notifications
     @Query("SELECT e FROM CalendarEvent e WHERE e.couple.id = :coupleId AND e.eventDate BETWEEN :today AND :until ORDER BY e.eventDate ASC")
     List<CalendarEvent> findUpcomingEvents(@Param("coupleId") Long coupleId, @Param("today") LocalDate today, @Param("until") LocalDate until);
+
+    // Every event (across all couples) that has a reminder configured — scanned daily by ReminderScheduler
+    @Query("SELECT e FROM CalendarEvent e WHERE e.reminderDaysBefore IS NOT NULL")
+    List<CalendarEvent> findAllWithReminderEnabled();
 }

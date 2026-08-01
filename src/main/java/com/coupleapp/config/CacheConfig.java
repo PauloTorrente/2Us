@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-// Imports comentados — Redis desabilitado em DEV
+// Redis imports below are unused while Redis stays disabled in dev (see RedisConfig.java).
 // import org.springframework.context.annotation.Primary;
 // import org.springframework.data.redis.cache.RedisCacheConfiguration;
 // import org.springframework.data.redis.cache.RedisCacheManager;
@@ -20,9 +20,8 @@ import org.springframework.context.annotation.Profile;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
-// Configures caching with Caffeine for local development (in-memory).
-// Redis configuration is commented out and available in RedisConfig.java for production use.
-// To enable Redis in production, uncomment RedisConfig.java and re-add the spring-boot-starter-data-redis dependency in pom.xml
+// Caffeine-backed cache for local dev. Swap to Redis in prod by uncommenting RedisConfig.java
+// and restoring the spring-boot-starter-data-redis dependency in pom.xml.
 @Configuration
 @EnableCaching
 public class CacheConfig {
@@ -30,8 +29,7 @@ public class CacheConfig {
     @Value("${app.cache.ttl-hours:1}")
     private int cacheTtlHours;
 
-    // Redis cache manager — DESABILITADO (comentado em RedisConfig.java)
-    // Descomente apenas em produção quando Redis estiver disponível
+    // Redis cache manager — disabled until Redis is provisioned in production.
     /*
     @Bean
     @Primary

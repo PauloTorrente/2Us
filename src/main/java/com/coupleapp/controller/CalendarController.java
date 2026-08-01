@@ -73,4 +73,48 @@ public class CalendarController {
         calendarService.deleteEvent(user, eventId);
         return ResponseEntity.noContent().build();
     }
+
+    // POST /api/calendar/availability — register a day off / vacation / flexible window
+    @PostMapping("/availability")
+    @Operation(summary = "Register an availability window (day off, vacation, flexible schedule)")
+    public ResponseEntity<AvailabilityWindowResponse> createAvailabilityWindow(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @Valid @RequestBody CreateAvailabilityWindowRequest request) {
+
+        User user = userResolver.resolveWithCouple(userDetails);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(calendarService.createAvailabilityWindow(user, request));
+    }
+
+    // GET /api/calendar/availability — all availability windows for the couple
+    @GetMapping("/availability")
+    @Operation(summary = "List the couple's availability windows")
+    public ResponseEntity<List<AvailabilityWindowResponse>> getAvailabilityWindows(
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        User user = userResolver.resolveWithCouple(userDetails);
+        return ResponseEntity.ok(calendarService.getAvailabilityWindows(user));
+    }
+
+    // GET /api/calendar/availability/overlaps — date ranges where both partners are free
+    @GetMapping("/availability/overlaps")
+    @Operation(summary = "Find date ranges where both partners' availability coincides")
+    public ResponseEntity<List<AvailabilityOverlapResponse>> getAvailabilityOverlaps(
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        User user = userResolver.resolveWithCouple(userDetails);
+        return ResponseEntity.ok(calendarService.getAvailabilityOverlaps(user));
+    }
+
+    // DELETE /api/calendar/availability/{windowId}
+    @DeleteMapping("/availability/{windowId}")
+    @Operation(summary = "Delete an availability window")
+    public ResponseEntity<Void> deleteAvailabilityWindow(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long windowId) {
+
+        User user = userResolver.resolveWithCouple(userDetails);
+        calendarService.deleteAvailabilityWindow(user, windowId);
+        return ResponseEntity.noContent().build();
+    }
 }

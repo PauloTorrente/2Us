@@ -1,5 +1,6 @@
 package com.coupleapp.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -15,6 +16,7 @@ import java.util.Map;
 // Catches all exceptions thrown across the app and returns structured JSON error responses.
 // Without this, Spring returns HTML error pages or raw stack traces — unacceptable for an API.
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
@@ -58,9 +60,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(body);
     }
 
-    // Catch-all — prevents internal errors from leaking details to clients
+    // Catch-all — prevents internal errors from leaking details to clients.
+    // Still logs the full stack trace server-side, otherwise 500s are impossible to debug.
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneric(Exception ex) {
+        log.error("Unhandled exception", ex);
         return build(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred");
     }
 

@@ -11,7 +11,11 @@ public class TaskDTOs {
             @NotBlank(message = "Description is required")
             String description,
 
-            Task.TaskAssignment assignment
+            Task.TaskAssignment assignment,
+
+            // Required when assignment == AGREED: the partner the couple agreed on.
+            // Ignored for RANDOM (the app picks) and optional for MANUAL.
+            Long assignedToUserId
     ) {}
 
     public record TaskResponse(
