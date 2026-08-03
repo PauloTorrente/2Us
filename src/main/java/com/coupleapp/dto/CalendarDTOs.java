@@ -44,6 +44,10 @@ public class CalendarDTOs {
         private Boolean recurringYearly;
         private Integer reminderDaysBefore;
         private LocalDateTime createdAt;
+        // Who created this event — null for system-generated events (e.g. recurring anniversary).
+        // Lets the app color-code calendar days by whichever partner created the event.
+        private Long createdByUserId;
+        private String createdByName;
     }
 
     @Data @NoArgsConstructor @AllArgsConstructor

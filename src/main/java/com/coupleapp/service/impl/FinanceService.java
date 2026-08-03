@@ -17,9 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.YearMonth;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -76,6 +79,46 @@ public class FinanceService {
         }
 
         return new FinanceSummaryResponse(totalIncome, totalExpenses, balance, expensesByCategory, topCategory);
+    }
+
+    // Groups the couple's recurring transactions (isRecurring=true) into reminders per
+    // description+category, and estimates next month's spending as the average of the last 3
+    // full calendar months. No new queries needed — reuses findByCoupleIdAndIsRecurringTrue and
+    // sumByType, both already used elsewhere in this service.
+    public FinanceInsightsResponse getInsights(User user) {
+        Long coupleId = user.getCouple().getId();
+
+        List<FinanceTransaction> recurring = transactionRepository.findByCoupleIdAndIsRecurringTrue(coupleId);
+        Map<String, List<FinanceTransaction>> grouped = recurring.stream()
+                .collect(Collectors.groupingBy(t -> t.getDescription().trim().toLowerCase() + "|" + t.getCategory()));
+
+        List<RecurringReminder> reminders = grouped.values().stream()
+                .map(txs -> {
+                    FinanceTransaction latest = txs.stream()
+                            .max(Comparator.comparing(FinanceTransaction::getTransactionDate))
+                            .orElseThrow();
+                    BigDecimal average = txs.stream()
+                            .map(FinanceTransaction::getAmount)
+                            .reduce(BigDecimal.ZERO, BigDecimal::add)
+                            .divide(BigDecimal.valueOf(txs.size()), 2, RoundingMode.HALF_UP);
+                    return new RecurringReminder(
+                            latest.getDescription(), latest.getCategory(), average,
+                            latest.getAmount(), latest.getTransactionDate(), txs.size()
+                    );
+                })
+                .sorted(Comparator.comparing(RecurringReminder::getLastPurchasedDate).reversed())
+                .toList();
+
+        int basisMonths = 3;
+        BigDecimal total = BigDecimal.ZERO;
+        LocalDate today = LocalDate.now();
+        for (int i = 1; i <= basisMonths; i++) {
+            YearMonth month = YearMonth.from(today).minusMonths(i);
+            total = total.add(transactionRepository.sumByType(coupleId, TransactionType.EXPENSE, month.atDay(1), month.atEndOfMonth()));
+        }
+        BigDecimal forecast = total.divide(BigDecimal.valueOf(basisMonths), 2, RoundingMode.HALF_UP);
+
+        return new FinanceInsightsResponse(reminders, forecast, basisMonths);
     }
 
     // --- Goals ---

@@ -35,6 +35,16 @@ public class User implements UserDetails {
     @JoinColumn(name = "couple_id")
     private Couple couple;
 
+    // Hex color (#RRGGBB) each partner picks for themselves — used to color-code their
+    // events/items across the app (calendar dots, task chips, etc). Null until chosen.
+    @Column(name = "theme_color", length = 7)
+    private String themeColor;
+
+    // Optional profile photo: a small JPEG (client resizes to ~256x256 before sending),
+    // base64-encoded and stored directly — no object storage configured for this project yet.
+    @Column(name = "avatar_base64", columnDefinition = "TEXT")
+    private String avatarBase64;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 

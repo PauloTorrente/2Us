@@ -45,4 +45,22 @@ public class WishlistDTOs {
         private String userName;
         private LocalDateTime createdAt;
     }
+
+    // Sent when the user pastes a product link, before actually saving the item — the app uses
+    // this to preview/pre-fill title, image, and price so they don't have to type it by hand.
+    @Data @NoArgsConstructor @AllArgsConstructor
+    public static class UnfurlRequest {
+        @NotBlank(message = "URL is required")
+        @Size(max = 500)
+        private String url;
+    }
+
+    // Any field can come back null if the page couldn't be read (e.g. Amazon blocking the
+    // request) — the frontend always falls back to manual entry in that case.
+    @Data @NoArgsConstructor @AllArgsConstructor
+    public static class UnfurlResponse {
+        private String title;
+        private String imageUrl;
+        private BigDecimal price;
+    }
 }

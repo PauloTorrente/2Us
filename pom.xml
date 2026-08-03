@@ -143,6 +143,13 @@
             <version>3.0.0</version>
         </dependency>
 
+        <!-- Jsoup (HTML parsing for wishlist link unfurl — Open Graph tags) -->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.18.1</version>
+        </dependency>
+
         <!-- Test Dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

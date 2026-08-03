@@ -2,6 +2,8 @@ package com.coupleapp.service.impl;
 
 import com.coupleapp.dto.AuthDTOs.*;
 import com.coupleapp.entity.User;
+import com.coupleapp.exception.ConflictException;
+import com.coupleapp.exception.NotFoundException;
 import com.coupleapp.repository.UserRepository;
 import com.coupleapp.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +25,7 @@ public class AuthService {
     @Transactional
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.email())) {
-            throw new RuntimeException("Email already registered");
+            throw new ConflictException("Email already registered");
         }
 
         User user = User.builder()
@@ -52,7 +54,7 @@ public class AuthService {
         );
 
         User user = userRepository.findByEmail(request.email())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
 
         String token = jwtUtil.generateToken(user);
 

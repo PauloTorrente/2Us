@@ -64,9 +64,12 @@ public class CalendarService {
     }
 
     private CalendarEventResponse mapToResponse(CalendarEvent e) {
+        User createdBy = e.getCreatedBy();
         return new CalendarEventResponse(e.getId(), e.getTitle(), e.getDescription(),
                 e.getEventDate(), e.getEndDate(), e.getEventType(),
-                e.getRecurringYearly(), e.getReminderDaysBefore(), e.getCreatedAt());
+                e.getRecurringYearly(), e.getReminderDaysBefore(), e.getCreatedAt(),
+                createdBy != null ? createdBy.getId() : null,
+                createdBy != null ? createdBy.getName() : null);
     }
 
     // --- Availability windows (days off, vacations, flexible schedules) ---

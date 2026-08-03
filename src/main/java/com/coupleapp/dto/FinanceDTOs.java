@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 public class FinanceDTOs {
@@ -59,6 +60,30 @@ public class FinanceDTOs {
         private BigDecimal balance;
         private Map<String, BigDecimal> expensesByCategory; // Category name -> total
         private String topSpendingCategory; // Highest spending category — front uses this for tips
+    }
+
+    // --- Insights (recurring-purchase reminders + next-month spending forecast) ---
+
+    // One group of recurring transactions (same description+category, isRecurring=true),
+    // e.g. "Mercado" bought a few times — lets the app suggest "buy again" with a realistic
+    // expected amount.
+    @Data @NoArgsConstructor @AllArgsConstructor
+    public static class RecurringReminder {
+        private String description;
+        private FinanceCategory category;
+        private BigDecimal averageAmount;
+        private BigDecimal lastAmount;
+        private LocalDate lastPurchasedDate;
+        private int occurrenceCount;
+    }
+
+    @Data @NoArgsConstructor @AllArgsConstructor
+    public static class FinanceInsightsResponse {
+        private List<RecurringReminder> recurringReminders;
+        // Simple average of total expenses over the last `forecastBasisMonths` full months —
+        // a heuristic, not a prediction model. Deliberately not fancier than that.
+        private BigDecimal nextMonthForecast;
+        private int forecastBasisMonths;
     }
 
     // --- Goals ---

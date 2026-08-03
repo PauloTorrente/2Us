@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Random;
 
 // Manages the couple lifecycle: creation, invite code generation, and partner joining.
@@ -111,7 +112,27 @@ public class CoupleService {
         return code;
     }
 
+    // Lets the authenticated user pick or change their own accent color.
+    @Transactional
+    public MemberResponse updateMyThemeColor(User user, UpdateThemeColorRequest request) {
+        user.setThemeColor(request.getThemeColor());
+        userRepository.save(user);
+        return toMemberResponse(user);
+    }
+
+    // Lets the authenticated user set or change their own profile photo.
+    @Transactional
+    public MemberResponse updateMyAvatar(User user, UpdateAvatarRequest request) {
+        user.setAvatarBase64(request.getAvatarBase64());
+        userRepository.save(user);
+        return toMemberResponse(user);
+    }
+
     private CoupleResponse mapToResponse(Couple couple) {
+        List<MemberResponse> members = userRepository.findByCoupleId(couple.getId()).stream()
+                .map(this::toMemberResponse)
+                .toList();
+
         return new CoupleResponse(
                 couple.getId(),
                 couple.getCoupleName(),
@@ -119,7 +140,12 @@ public class CoupleService {
                 couple.getExactDateKnown(),
                 couple.getStatus(),
                 couple.getInviteCode(),
-                couple.getCreatedAt()
+                couple.getCreatedAt(),
+                members
         );
+    }
+
+    private MemberResponse toMemberResponse(User u) {
+        return new MemberResponse(u.getId(), u.getName(), u.getThemeColor(), u.getAvatarBase64());
     }
 }

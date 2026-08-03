@@ -17,4 +17,8 @@ public interface WishlistItemRepository extends JpaRepository<WishlistItem, Long
 
     // Unfulfilled items only — used to show what still needs to be gifted
     List<WishlistItem> findByCoupleIdAndIsFulfilledFalseOrderByPriorityDesc(Long coupleId);
+
+    // Every not-yet-gifted item that came from a product link, across all couples — the price
+    // tracking scheduler re-checks these daily for drops.
+    List<WishlistItem> findBySourceAndIsFulfilledFalseAndProductUrlIsNotNull(WishlistItem.WishlistSource source);
 }

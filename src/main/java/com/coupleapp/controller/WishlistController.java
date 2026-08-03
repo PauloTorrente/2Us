@@ -2,6 +2,7 @@ package com.coupleapp.controller;
 
 import com.coupleapp.dto.WishlistDTOs.*;
 import com.coupleapp.entity.User;
+import com.coupleapp.service.impl.LinkUnfurlService;
 import com.coupleapp.service.impl.WishlistService;
 import com.coupleapp.util.UserResolver;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,6 +26,7 @@ public class WishlistController {
 
     private final WishlistService wishlistService;
     private final UserResolver userResolver;
+    private final LinkUnfurlService linkUnfurlService;
 
     // GET /api/wishlist — both partners' wishlists combined
     @GetMapping
@@ -62,6 +64,20 @@ public class WishlistController {
 
         User user = userResolver.resolveWithCouple(userDetails);
         return ResponseEntity.ok(wishlistService.fulfillItem(user, itemId));
+    }
+
+    // POST /api/wishlist/unfurl — best-effort preview (title/image/price) from a pasted link.
+    // Doesn't persist anything, just fills the "add item" form. Never fails hard — fields come
+    // back null when the page couldn't be parsed.
+    @PostMapping("/unfurl")
+    @Operation(summary = "Preview title/image/price from a product link")
+    public ResponseEntity<UnfurlResponse> unfurl(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @Valid @RequestBody UnfurlRequest request) {
+
+        userResolver.resolveWithCouple(userDetails);
+        var result = linkUnfurlService.unfurl(request.getUrl());
+        return ResponseEntity.ok(new UnfurlResponse(result.title(), result.imageUrl(), result.price()));
     }
 
     // DELETE /api/wishlist/{itemId} — only the owner can delete their own item

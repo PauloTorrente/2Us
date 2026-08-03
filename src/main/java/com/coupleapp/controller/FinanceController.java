@@ -72,6 +72,14 @@ public class FinanceController {
         return ResponseEntity.ok(financeService.getSummary(user, start, end));
     }
 
+    // GET /api/finance/insights — recurring-purchase reminders + next-month spending forecast
+    @GetMapping("/insights")
+    @Operation(summary = "Get recurring-purchase reminders and a next-month spending forecast")
+    public ResponseEntity<FinanceInsightsResponse> getInsights(@AuthenticationPrincipal UserDetails userDetails) {
+        User user = userResolver.resolveWithCouple(userDetails);
+        return ResponseEntity.ok(financeService.getInsights(user));
+    }
+
     // --- Goals ---
 
     // GET /api/finance/goals — all savings goals (house, car, vacation, etc.)
